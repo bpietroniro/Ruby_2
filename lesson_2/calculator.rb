@@ -136,9 +136,9 @@ loop do
 
   prompt("The result is #{result}.")
 
-  prompt(MESSAGE['again'])
+  prompt(MESSAGES['again'])
   answer = Kernel.gets().chomp()
   break unless answer.downcase().start_with?('y')
 end
 
-prompt(MESSAGE['goodbye'])
+prompt(MESSAGES['goodbye'])
