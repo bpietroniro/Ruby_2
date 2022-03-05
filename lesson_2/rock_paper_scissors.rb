@@ -78,7 +78,7 @@ end
 
 loop do
   $score_count = [0, 0]
-
+  prompt("Welcome to Rock, Paper, Scissors, Spock, Lizard!")
   loop do
     choice = ''
 
