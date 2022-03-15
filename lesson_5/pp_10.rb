@@ -11,10 +11,28 @@
 # output: array of hashes
 #
 # ALGORITHM
-# - iterate through the arraay
-#   - iterate through each hash
-# 
+# - create a new array to be filled 
+# - iterate through the array
+#   - create a new hash
+#   - iterate through each original hash
+#     - create a new hash entry with the same key but value incremented by 1
+#     - add this entry to the new hash
+#   - add the new hash to the new array
+# - return the new array
 
-[{a: 1}, {b: 2, c: 3}, {d: 4, e: 5, f: 6}]
+arr = [{a: 1}, {b: 2, c: 3}, {d: 4, e: 5, f: 6}]
 
+# cheating with a snazzy method I found
+new_arr = arr.map do |hash|
+  hash.transform_values { |value| value + 1 }
+end
 
+# using methods covered in lesson 4
+new_arr = arr.map do |hash|
+  hash.each_with_object({}) do |(key, value), new_hash|
+    new_hash[key] = value + 1
+  end
+end
+
+p "arr: #{arr}"
+p "new_arr: #{new_arr}"
