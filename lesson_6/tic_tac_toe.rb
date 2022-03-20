@@ -20,6 +20,11 @@ the spaces on the board like so:
 4 5 6
 7 8 9
 
+TODO: look for ways to refactor, then request code review
+TODO: explore the minimax algorithm
+TODO: build functionality for bigger board sizes
+TODO: build functionality for 2 human players, and/or more than 2 computer players
+
 =end
 
 ROUNDS = 5
@@ -70,7 +75,16 @@ def empty_squares(brd)
   brd.keys.select { |num| brd[num] == INITIAL_MARKER }
 end
 
-def player_places_piece(brd)
+def place_piece!(brd, player)
+  case player
+  when 'Player'
+    player_places_piece!(brd)
+  when 'Computer'
+    computer_places_piece!(brd)
+  end
+end
+
+def player_places_piece!(brd)
   square = ''
   loop do
     prompt "Choose a square (#{joinor(empty_squares(brd))}):"
@@ -82,7 +96,7 @@ def player_places_piece(brd)
   brd[square] = PLAYER_MARKER
 end
 
-def computer_places_piece(brd)
+def computer_places_piece!(brd)
   chosen = false
   comp_choice = 0
 
@@ -110,9 +124,10 @@ def computer_places_piece(brd)
   brd[comp_choice] = COMPUTER_MARKER
 end
 
+
 def threatened?(line, brd, marker)
-  current_plays = brd.values_at(*line)
-  (current_plays.count(marker) == 2) && (current_plays.include?(INITIAL_MARKER))
+  pieces = brd.values_at(*line)
+  (pieces.count(marker) == 2) && (pieces.include?(INITIAL_MARKER))
 end
 
 def choose_square(line, brd)
@@ -138,6 +153,28 @@ def detect_winner(brd)
   nil
 end
 
+def who_goes_first?
+  answer = ''
+  loop do
+    prompt "Who gets to make the first move, you or the computer?"
+    prompt "(enter 'c' for computer, 'h' for human, or 'x' to let the computer choose)"
+    answer = gets.chomp.downcase
+    break if ['h', 'c', 'x'].include?(answer)
+    prompt "Invalid choice. Please enter 'c' or 'h':"
+  end
+
+  case answer
+  when 'x' then ["Player", "Computer"].sample
+  when 'h' then "Player"
+  when 'c' then "Computer"
+  end
+end
+
+def alternate_player(player)
+  return "Computer" if player == "Player"
+  return "Player" if player == "Computer"
+end
+
 loop do
   prompt "Welcome to Tic-Tac-Toe! Winner of #{ROUNDS} rounds wins the match."
   prompt "Press [Enter] to continue."
@@ -147,14 +184,12 @@ loop do
 
   loop do
     board = initialize_board
+    current_player = who_goes_first?
 
     loop do
       display_board(board)
-
-      player_places_piece(board)
-      break if someone_won?(board) || board_full?(board)
-
-      computer_places_piece(board)
+      place_piece!(board, current_player)
+      current_player = alternate_player(current_player)
       break if someone_won?(board) || board_full?(board)
     end
 
