@@ -1,3 +1,5 @@
+require 'pry-byebug'
+
 =begin
 
 PROBLEM
@@ -21,6 +23,7 @@ ALGORITHM
 - return result of the previous operation multiplied by sign
 =end
 
+# my first solution
 def string_to_signed_integer(numstr)
   sign = 1
   if numstr[0] == "+"
@@ -41,7 +44,35 @@ def string_to_integer(numstr)
   output
 end
 
+# Launch School's solution
+def string_to_signed_integer_II(numstr)
+  case numstr[0]
+  when '-' then -string_to_integer(numstr[1..-1])
+  when '+' then string_to_integer(numstr[1..-1])
+  else string_to_integer(numstr)
+  end
+end
+
+# further exploration
+def stsi_refactored(numstr)
+  sliced = case numstr[0]
+           when '-','+' then numstr[1..-1]
+           else numstr
+           end
+  case numstr[0]
+  when '-' then -string_to_integer(sliced)
+  else string_to_integer(sliced)
+  end
+end
+
 puts string_to_signed_integer('4321') == 4321
 puts string_to_signed_integer('-570') == -570
 puts string_to_signed_integer('+100') == 100
 
+puts string_to_signed_integer_II('4321') == 4321
+puts string_to_signed_integer_II('-570') == -570
+puts string_to_signed_integer_II('+100') == 100
+
+puts stsi_refactored('4321') == 4321
+puts stsi_refactored('-570') == -570
+puts stsi_refactored('+100') == 100
