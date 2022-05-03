@@ -1,3 +1,5 @@
+require 'pry-byebug'
+
 =begin
 
 A stack is a list of values that grows and shrinks dynamically. In ruby, a stack is easily implemented as an Array that just uses the #push and #pop methods.
@@ -59,18 +61,90 @@ minilang('6 PUSH')
 
 
 DATA STRUCTURES
+input: string
+output: output whatever PRINT says; no return
+intermediate:
+- an array of commands (the input string split by spaces)
 - a variable to act as the register (stores one value at a time)
 - an array to represent the stack
 
 IDEAS
 - any number => assign the register variable the value of the number
-- PUSH => Array#push
-- ADD => Array#pop 
-- PRINT => puts
-- 
+- PUSH => call Array#push on the stack with the value of the register as the argument
+- ADD => call Array#pop on the stack and add the result to the value of the register; store the result in the register
+- SUB => call Array#pop on the stack and subtract the result from the value of the register; store the result in the register
+- PRINT => call Kernel#puts on the register
+- etc.
+
+ALGORITHM
+- split input string into array with space as separator; call this array "commands"
+- initalize "register" to value 0
+- initialize "stack" as empty array
+- iterate through commands
+  - case statement on value of the current element:
+    - if the current element is a digit, convert it to an int and store it in register
+    - PUSH => 
+    - ADD =>
+    - SUB =>
+    - MULT =>
+    - DIV =>
+    - MOD =>
+    - POP =>
+    - PRINT =>
 
 =end
 
 def minilang(program_string)
+  commands = program_string.split(' ')
+  register = 0
+  stack = []
 
+  commands.each do |command|
+    # binding.pry
+    if command.to_i.to_s == command
+      register = command.to_i
+    end
+    case command
+    when 'PUSH' then stack.push(register)
+    when 'ADD' then register += stack.pop
+    when 'SUB' then register -= stack.pop
+    when 'MULT' then register *= stack.pop
+    when 'DIV' then register /= stack.pop
+    when 'MOD' then register %= stack.pop
+    when 'POP' then register = stack.pop
+    when 'PRINT' then puts register
+    end
+  end
 end
+
+minilang('PRINT')
+# 0
+
+minilang('5 PUSH 3 MULT PRINT')
+# 15
+
+minilang('5 PRINT PUSH 3 PRINT ADD PRINT')
+# 5
+# 3
+# 8
+
+minilang('5 PUSH POP PRINT')
+# 5
+
+minilang('3 PUSH 4 PUSH 5 PUSH PRINT ADD PRINT POP PRINT ADD PRINT')
+# 5
+# 10
+# 4
+# 7
+
+minilang('3 PUSH PUSH 7 DIV MULT PRINT ')
+# 6
+
+minilang('4 PUSH PUSH 7 MOD MULT PRINT ')
+# 12
+
+minilang('-3 PUSH 5 SUB PRINT')
+# 8
+
+minilang('6 PUSH')
+# (nothing printed; no PRINT commands)
