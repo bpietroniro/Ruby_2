@@ -28,6 +28,8 @@ is:
 Write a method that takes an arbitrary matrix and rotates it 90 degrees clockwise as shown above.
 =end
 
+def rotate90(m)
+end
 
 matrix1 = [
   [1, 5, 8],
